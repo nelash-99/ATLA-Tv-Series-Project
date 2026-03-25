@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elements & Nations | Avatar: The Animation Chronicles</title>
+  <meta name="description" content="Explore the four nations — Air Nomads, Water Tribe, Earth Kingdom, and Fire Nation — from Avatar: The Last Airbender."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Page Hero ─────────────────────────────────────────*/
+    .page-hero {
+      min-height: 55vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem clamp(1rem,5vw,3rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero__bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(75,63,160,0.3) 0%, rgba(10,8,18,0) 100%);
+    }
+    .page-hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,7vw,5rem);
+      font-weight:900;
+      background: linear-gradient(135deg, var(--clr-gold), var(--clr-parchment), var(--clr-gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      position:relative; z-index:1;
+    }
+    .page-hero__sub {
+      font-family: var(--font-heading);
+      font-size:0.75rem; letter-spacing:0.3em;
+      text-transform:uppercase;
+      color:var(--clr-gold); opacity:0.7;
+      position:relative; z-index:1;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Nation Full Sections ─────────────────────────────*/
+    .nation-section {
+      padding: clamp(4rem,10vw,7rem) clamp(1rem,5vw,4rem);
+      position: relative; z-index: 2;
+    }
+    .nation-section + .nation-section {
+      border-top: 1px solid var(--clr-border);
+    }
+    .nation-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem,5vw,5rem);
+      align-items: center;
+    }
+    .nation-layout.reverse { direction: rtl; }
+    .nation-layout.reverse > * { direction: ltr; }
+    @media(max-width:800px){
+      .nation-layout, .nation-layout.reverse { grid-template-columns: 1fr; direction: ltr; }
+    }
+
+    .nation-badge {
+      aspect-ratio: 1;
+      max-width: 380px;
+      margin: 0 auto;
+      border-radius: 50%;
+      display: flex; align-items:center; justify-content:center;
+      font-size: clamp(6rem, 15vw, 9rem);
+      border: 2px solid;
+      position:relative;
+      transition: transform 0.4s var(--ease-bounce);
+    }
+    .nation-badge:hover { transform: scale(1.06); }
+    .nation-badge::after {
+      content:''; position:absolute; inset:-2px;
+      border-radius:50%; border: 1px solid;
+      opacity:0.3; animation: spin-slow 20s linear infinite;
+    }
+    .badge-air   { border-color: var(--clr-air);      background: radial-gradient(circle, rgba(135,206,235,0.15) 0%, rgba(10,8,18,0.8) 70%); }
+    .badge-air::after { border-color: var(--clr-air); }
+    .badge-water { border-color: var(--clr-water-lt); background: radial-gradient(circle, rgba(26,102,145,0.25) 0%, rgba(10,8,18,0.8) 70%); }
+    .badge-water::after{ border-color: var(--clr-water-lt); }
+    .badge-earth { border-color: var(--clr-earth-lt); background: radial-gradient(circle, rgba(58,107,53,0.25) 0%, rgba(10,8,18,0.8) 70%); }
+    .badge-earth::after{ border-color: var(--clr-earth-lt); }
+    .badge-fire  { border-color: var(--clr-fire-lt);  background: radial-gradient(circle, rgba(192,57,43,0.25) 0%, rgba(10,8,18,0.8) 70%); }
+    .badge-fire::after { border-color: var(--clr-fire-lt); animation-direction: reverse; }
+
+    .nation-info__label {
+      font-family:var(--font-heading);
+      font-size:0.7rem; letter-spacing:0.3em;
+      text-transform:uppercase; margin-bottom:0.8rem;
+    }
+    .nation-info__name {
+      font-family:var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height:1.05; margin-bottom: 1.2rem;
+    }
+    .nation-info__desc {
+      font-size:0.9rem; opacity:0.65; line-height:1.8;
+      margin-bottom:1.5rem;
+    }
+    .nation-traits {
+      display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1.5rem;
+    }
+    .trait-tag {
+      padding:0.35rem 0.9rem;
+      border-radius:var(--radius-xl);
+      border:1px solid;
+      font-family:var(--font-heading);
+      font-size:0.65rem; letter-spacing:0.15em;
+      text-transform:uppercase;
+    }
+
+    .air-theme   .nation-info__label, .air-theme .nation-info__name { color: var(--clr-air); }
+    .air-theme   .trait-tag { border-color:var(--clr-air); color:var(--clr-air); background:rgba(135,206,235,0.06); }
+    .water-theme .nation-info__label, .water-theme .nation-info__name { color: var(--clr-water-lt);}
+    .water-theme .trait-tag { border-color:var(--clr-water-lt); color:var(--clr-water-lt); background:rgba(91,199,245,0.06);}
+    .earth-theme .nation-info__label, .earth-theme .nation-info__name { color: var(--clr-earth-lt);}
+    .earth-theme .trait-tag { border-color:var(--clr-earth-lt); color:var(--clr-earth-lt); background:rgba(126,200,80,0.06);}
+    .fire-theme  .nation-info__label, .fire-theme .nation-info__name { color: var(--clr-fire-lt);}
+    .fire-theme  .trait-tag { border-color:var(--clr-fire-lt); color:var(--clr-fire-lt); background:rgba(243,156,18,0.06); }
+
+    /* Philosophy cards */
+    .philosophy-grid {
+      display:grid; grid-template-columns: repeat(2,1fr); gap:1rem; margin-top:1rem;
+    }
+    @media(max-width:500px){ .philosophy-grid { grid-template-columns:1fr; } }
+    .phil-card {
+      padding:1.2rem;
+      background:var(--clr-surface);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius-sm);
+    }
+    .phil-card__title { font-family:var(--font-heading); font-size:0.72rem; letter-spacing:0.1em; color:var(--clr-gold); margin-bottom:0.3rem; }
+    .phil-card__text  { font-size:0.78rem; opacity:0.55; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+  <div class="page-wrapper">
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+      <div class="page-hero__bg"></div>
+      <div style="position:relative;z-index:1;text-align:center;">
+        <p class="page-hero__sub">Explore the World</p>
+        <h1 class="page-hero__title">Elements & Nations</h1>
+      </div>
+    </section>
+
+    <!-- ══ AIR NOMADS ═══════════════════════════════════════ -->
+    <section class="nation-section air-theme" id="air">
+      <div class="nation-layout">
+        <div class="nation-badge badge-air floating reveal">🌪️</div>
+        <div class="nation-info reveal reveal-delay-1">
+          <p class="nation-info__label">The First Nation</p>
+          <h2 class="nation-info__name">Air Nomads</h2>
+          <p class="nation-info__desc">The Air Nomads were a peaceful civilization of monks and nuns who lived in four Air Temples scattered across the world. They roamed the skies on flying bison, renouncing material attachment and dedicating their lives to spiritual enlightenment. Airbending, the gentlest yet most evasive of all arts, reflects their philosophy of freedom.</p>
+          <div class="nation-traits">
+            <span class="trait-tag">Spiritual</span>
+            <span class="trait-tag">Freedom</span>
+            <span class="trait-tag">Nomadic</span>
+            <span class="trait-tag">Peaceful</span>
+          </div>
+          <div class="philosophy-grid">
+            <div class="phil-card">
+              <div class="phil-card__title">Philosophy</div>
+              <p class="phil-card__text">Non-attachment and harmony with all living things guide the Air Nomad way of life.</p>
+            </div>
+            <div class="phil-card">
+              <div class="phil-card__title">Element Style</div>
+              <p class="phil-card__text">Airbending is evasive and circular, using redirection over force — a dance with the wind.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ WATER TRIBE ═══════════════════════════════════════ -->
+    <section class="nation-section water-theme" id="water">
+      <div class="nation-layout reverse">
+        <div class="nation-badge badge-water floating reveal">🌊</div>
+        <div class="nation-info reveal reveal-delay-1">
+          <p class="nation-info__label">Polar Guardians</p>
+          <h2 class="nation-info__name">Water Tribe</h2>
+          <p class="nation-info__desc">Split between the North and South Poles, the Water Tribe are resilient survivors of the harshest climates. Their connection to the moon and ocean gives their bending remarkable depth — from crashing tidal waves to delicate healing arts. The Southern Water Tribe warriors are known for their tenacity and loyalty.</p>
+          <div class="nation-traits">
+            <span class="trait-tag">Resilient</span>
+            <span class="trait-tag">Healing</span>
+            <span class="trait-tag">Loyal</span>
+            <span class="trait-tag">Adaptive</span>
+          </div>
+          <div class="philosophy-grid">
+            <div class="phil-card">
+              <div class="phil-card__title">Philosophy</div>
+              <p class="phil-card__text">Flow like water — adapt to any obstacle, change form, yet always find your way forward.</p>
+            </div>
+            <div class="phil-card">
+              <div class="phil-card__title">Element Style</div>
+              <p class="phil-card__text">Waterbending moves in fluid arcs, shifting between offense and healing with equal grace.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ EARTH KINGDOM ═════════════════════════════════════ -->
+    <section class="nation-section earth-theme" id="earth">
+      <div class="nation-layout">
+        <div class="nation-badge badge-earth floating reveal">🪨</div>
+        <div class="nation-info reveal reveal-delay-1">
+          <p class="nation-info__label">The Mighty Realm</p>
+          <h2 class="nation-info__name">Earth Kingdom</h2>
+          <p class="nation-info__desc">The largest nation in the world, the Earth Kingdom is as vast and diverse as the element it commands. From the mighty walls of Ba Sing Se to the labyrinthine caves of the Badgermoles, earthbenders embody strength, stubbornness, and perseverance. They do not yield — they endure.</p>
+          <div class="nation-traits">
+            <span class="trait-tag">Strong</span>
+            <span class="trait-tag">Stubborn</span>
+            <span class="trait-tag">Enduring</span>
+            <span class="trait-tag">Diverse</span>
+          </div>
+          <div class="philosophy-grid">
+            <div class="phil-card">
+              <div class="phil-card__title">Philosophy</div>
+              <p class="phil-card__text">Stand firm. Like a mountain, meet force with force and never retreat from what matters.</p>
+            </div>
+            <div class="phil-card">
+              <div class="phil-card__title">Element Style</div>
+              <p class="phil-card__text">Earthbending is powerful and direct — powerful stances, rock strikes, and impenetrable walls.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FIRE NATION ═══════════════════════════════════════ -->
+    <section class="nation-section fire-theme" id="fire">
+      <div class="nation-layout reverse">
+        <div class="nation-badge badge-fire reveal" style="animation: fire-dance 2s ease-in-out infinite;">🔥</div>
+        <div class="nation-info reveal reveal-delay-1">
+          <p class="nation-info__label">The Fierce Empire</p>
+          <h2 class="nation-info__name">Fire Nation</h2>
+          <p class="nation-info__desc">Powerful, disciplined, and driven by ambition, the Fire Nation harnessed the sun's energy to fuel a century-long war of conquest. Yet within this empire of power lies a capacity for honor, redemption, and extraordinary courage. Firebending is fueled by breath and will — an art of pure, focused energy.</p>
+          <div class="nation-traits">
+            <span class="trait-tag">Passionate</span>
+            <span class="trait-tag">Disciplined</span>
+            <span class="trait-tag">Ambitious</span>
+            <span class="trait-tag">Honorable</span>
+          </div>
+          <div class="philosophy-grid">
+            <div class="phil-card">
+              <div class="phil-card__title">Philosophy</div>
+              <p class="phil-card__text">Power comes from within — breath, willpower, and the relentless pursuit of greatness.</p>
+            </div>
+            <div class="phil-card">
+              <div class="phil-card__title">Element Style</div>
+              <p class="phil-card__text">Firebending is aggressive and explosive — sharp kicks and strikes that unleash pure force.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <script src="nav.js"></script>
+  <script>
+    document.querySelectorAll('.reveal').forEach(el => {
+      new IntersectionObserver(e=>{ e.forEach(x=>{ if(x.isIntersecting) x.target.classList.add('visible'); }); },{threshold:0.1}).observe(el);
+    });
+  </script>
+</body>
+</html>

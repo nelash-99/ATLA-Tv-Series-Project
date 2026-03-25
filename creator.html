@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Creator's Corner | Avatar: The Animation Chronicles</title>
+  <meta name="description" content="Creator's Corner — behind the scenes insights, creative notes, and inspiration behind Avatar: The Last Airbender."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero {
+      min-height:50vh; display:flex; align-items:center; justify-content:center; text-align:center;
+      padding:3rem clamp(1rem,5vw,3rem);
+      background:radial-gradient(ellipse at 40% 50%, rgba(212,175,55,0.12) 0%, transparent 60%),
+                 radial-gradient(ellipse at 70% 30%, rgba(75,63,160,0.2) 0%, transparent 50%);
+      position:relative; overflow:hidden;
+    }
+    .page-hero__title {
+      font-family:var(--font-display); font-size:clamp(2rem,7vw,5rem); font-weight:900;
+      background:linear-gradient(135deg,var(--clr-gold),var(--clr-parchment),var(--clr-gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .page-hero__sub {
+      font-family:var(--font-heading); font-size:0.75rem; letter-spacing:0.3em;
+      text-transform:uppercase; color:var(--clr-gold); opacity:0.7; margin-bottom:0.8rem;
+    }
+
+    /* Main content */
+    .creator-section {
+      padding:clamp(4rem,10vw,7rem) clamp(1rem,5vw,4rem);
+      position:relative; z-index:2;
+    }
+
+    /* Creator intro */
+    .creator-intro {
+      display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;
+      margin-bottom:clamp(4rem,8vw,6rem);
+    }
+    @media(max-width:800px){ .creator-intro { grid-template-columns:1fr; } }
+
+    .creator-intro__visual {
+      aspect-ratio:1;
+      max-width:400px; margin:0 auto;
+      border-radius:var(--radius-lg);
+      background:radial-gradient(ellipse at center, rgba(212,175,55,0.12), rgba(10,8,18,0.8));
+      border:1px solid rgba(212,175,55,0.2);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:1rem; text-align:center; padding:2rem;
+      position:relative; overflow:hidden;
+    }
+    .creator-intro__visual::before {
+      content:''; position:absolute; inset:0;
+      background:conic-gradient(from 0deg, transparent, rgba(212,175,55,0.05), transparent);
+      animation:spin-slow 20s linear infinite;
+    }
+    .creator-intro__avatar { font-size:5rem; position:relative; z-index:1; }
+    .creator-intro__name {
+      font-family:var(--font-display); font-size:1.3rem; color:var(--clr-gold);
+      position:relative; z-index:1;
+    }
+    .creator-intro__role {
+      font-family:var(--font-heading); font-size:0.68rem;
+      letter-spacing:0.2em; text-transform:uppercase;
+      opacity:0.5; position:relative; z-index:1;
+    }
+
+    .creator-intro__text h2 {
+      font-family:var(--font-display); font-size:clamp(1.8rem,4vw,2.8rem); font-weight:700;
+      color:var(--clr-gold); margin-bottom:1.2rem; line-height:1.1;
+    }
+    .creator-intro__text p {
+      font-size:0.88rem; opacity:0.65; line-height:1.85;
+      margin-bottom:1rem;
+    }
+
+    /* Pillars */
+    .pillars-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;
+      margin-bottom:clamp(4rem,8vw,6rem);
+    }
+    @media(max-width:900px){ .pillars-grid{ grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:560px){ .pillars-grid { grid-template-columns:1fr; } }
+
+    .pillar-card {
+      padding:2rem 1.5rem;
+      background:var(--clr-surface);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius-md);
+      text-align:center;
+      transition:transform 0.35s var(--ease-bounce), border-color 0.3s, box-shadow 0.3s;
+    }
+    .pillar-card:hover {
+      transform:translateY(-8px);
+      border-color:rgba(212,175,55,0.3);
+      box-shadow:0 16px 48px rgba(0,0,0,0.35);
+    }
+    .pillar-card__icon { font-size:2.5rem; margin-bottom:1rem; }
+    .pillar-card__num {
+      font-family:var(--font-display); font-size:2rem;
+      color:var(--clr-gold); opacity:0.15; line-height:1; margin-bottom:0.3rem;
+    }
+    .pillar-card__title {
+      font-family:var(--font-heading); font-size:0.85rem;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--clr-gold); margin-bottom:0.6rem;
+    }
+    .pillar-card__text { font-size:0.8rem; opacity:0.55; line-height:1.7; }
+
+    /* Timeline */
+    .timeline-title {
+      font-family:var(--font-display); font-size:clamp(1.6rem,4vw,2.5rem);
+      color:var(--clr-gold); text-align:center; margin-bottom:3rem;
+    }
+    .timeline { position:relative; max-width:750px; margin:0 auto; }
+    .timeline::before {
+      content:''; position:absolute;
+      top:0; bottom:0; left:50%; width:1px; transform:translateX(-50%);
+      background:linear-gradient(transparent, var(--clr-gold), transparent);
+    }
+    @media(max-width:700px){ .timeline::before { left:24px; } }
+
+    .timeline-event {
+      display:grid; grid-template-columns:1fr 40px 1fr;
+      gap:1rem; align-items:center; margin-bottom:2.5rem;
+    }
+    @media(max-width:700px){
+      .timeline-event { grid-template-columns:40px 1fr; }
+      .timeline-event .event-left { display:none; }
+    }
+
+    .event-dot {
+      width:40px; height:40px; border-radius:50%;
+      background:var(--clr-bg2); border:2px solid var(--clr-gold);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; z-index:1;
+      box-shadow:0 0 12px rgba(212,175,55,0.4);
+    }
+    .event-left { text-align:right; }
+    .event-right { }
+    .event-year {
+      font-family:var(--font-display); font-size:1.4rem; color:var(--clr-gold);
+      opacity:0.5; line-height:1;
+    }
+    .event-title {
+      font-family:var(--font-heading); font-size:0.85rem;
+      text-transform:uppercase; letter-spacing:0.1em;
+      color:var(--clr-parchment); margin-bottom:0.3rem;
+    }
+    .event-desc { font-size:0.78rem; opacity:0.5; line-height:1.6; }
+
+    /* Quote wall */
+    .quote-wall {
+      display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem;
+    }
+    @media(max-width:700px){ .quote-wall { grid-template-columns:1fr; } }
+    .quote-card {
+      padding:2rem;
+      background:var(--clr-surface);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius-md);
+      position:relative;
+    }
+    .quote-card::before {
+      content:'"'; position:absolute; top:-0.5rem; left:1.2rem;
+      font-family:var(--font-display); font-size:4rem;
+      color:var(--clr-gold); opacity:0.15; line-height:1;
+    }
+    .quote-card__text {
+      font-family:var(--font-heading); font-size:0.88rem;
+      line-height:1.8; opacity:0.75; font-style:italic;
+      margin-bottom:1rem;
+    }
+    .quote-card__author {
+      font-family:var(--font-heading); font-size:0.68rem;
+      letter-spacing:0.15em; text-transform:uppercase;
+      color:var(--clr-gold); opacity:0.8;
+      display:flex; align-items:center; gap:0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+  <div class="page-wrapper">
+
+    <section class="page-hero">
+      <div>
+        <p class="page-hero__sub">Behind the Legend</p>
+        <h1 class="page-hero__title">Creator's Corner</h1>
+      </div>
+    </section>
+
+    <section class="creator-section">
+
+      <!-- ── Intro ─────────────────────────────────────────── -->
+      <div class="creator-intro">
+        <div class="creator-intro__visual reveal">
+          <div class="creator-intro__avatar">✍️</div>
+          <div class="creator-intro__name">Michael DiMartino<br/>&amp; Bryan Konietzko</div>
+          <div class="creator-intro__role">Co-Creators of Avatar: The Last Airbender</div>
+        </div>
+        <div class="creator-intro__text reveal reveal-delay-2">
+          <h2>The Vision Behind the Legend</h2>
+          <p>Avatar: The Last Airbender was conceived by writers Michael DiMartino and Bryan Konietzko in 2001. Inspired by Asian cultures, martial arts philosophies, and a deep love for animated storytelling, they created a world of breathtaking depth — blending humor, heartbreak, and heroism.</p>
+          <p>The show originally aired on Nickelodeon from 2005 to 2008 across three "Books": Water, Earth, and Fire. Its layered characters, moral complexity, and spiritual themes earned it widespread acclaim as one of the greatest animated series ever made.</p>
+          <p>This corner celebrates the creative genius behind the series — their inspirations, process, and the love that brought a world of four elements to life.</p>
+          <a href="blog.html" class="btn btn-outline" style="margin-top:1rem;">Read The History →</a>
+        </div>
+      </div>
+
+      <!-- ── Creative Pillars ───────────────────────────────── -->
+      <div class="section-title reveal">
+        <p class="section-title__eyebrow">Design Philosophy</p>
+        <h2 class="section-title__main">Creative Pillars</h2>
+        <div class="section-title__divider"></div>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card reveal reveal-delay-1">
+          <div class="pillar-card__icon">🌏</div>
+          <div class="pillar-card__num">01</div>
+          <div class="pillar-card__title">Asian Inspiration</div>
+          <p class="pillar-card__text">The world draws deeply from Chinese, Tibetan, Japanese, Korean, and Inuit cultures — from architecture and costume to philosophy and martial arts.</p>
+        </div>
+        <div class="pillar-card reveal reveal-delay-2">
+          <div class="pillar-card__icon">🥋</div>
+          <div class="pillar-card__num">02</div>
+          <div class="pillar-card__title">Martial Arts Foundation</div>
+          <p class="pillar-card__text">Each bending style is grounded in a real martial art: Tai Chi (Air), Bagua (Water), Hung Gar (Earth), and Northern Shaolin (Fire).</p>
+        </div>
+        <div class="pillar-card reveal reveal-delay-3">
+          <div class="pillar-card__icon">⚖️</div>
+          <div class="pillar-card__num">03</div>
+          <div class="pillar-card__title">Moral Complexity</div>
+          <p class="pillar-card__text">The show refuses easy villains. Every antagonist has understandable motivations, and every hero carries real flaws. Especially Zuko.</p>
+        </div>
+        <div class="pillar-card reveal reveal-delay-4">
+          <div class="pillar-card__icon">🌊</div>
+          <div class="pillar-card__num">04</div>
+          <div class="pillar-card__title">Spiritual Philosophy</div>
+          <p class="pillar-card__text">Themes of Buddhism, Taoism, and Hinduism weave through the series — from the Avatar cycle and reincarnation to balance and the spirit world.</p>
+        </div>
+        <div class="pillar-card reveal reveal-delay-1">
+          <div class="pillar-card__icon">😂</div>
+          <div class="pillar-card__num">05</div>
+          <div class="pillar-card__title">Humor & Heart</div>
+          <p class="pillar-card__text">Sokka's comedic genius and Iroh's gentle wisdom ensure the show never loses its warmth — even in the darkest moments of war and loss.</p>
+        </div>
+        <div class="pillar-card reveal reveal-delay-2">
+          <div class="pillar-card__icon">🎨</div>
+          <div class="pillar-card__num">06</div>
+          <div class="pillar-card__title">Visual Artistry</div>
+          <p class="pillar-card__text">Working with Korean studio JM Animation, the show achieved a visual quality rarely seen in Western animation — fluid, expressive, and cinematically lit.</p>
+        </div>
+      </div>
+
+      <!-- ── Timeline ───────────────────────────────────────── -->
+      <div class="section-title reveal" style="margin-top:clamp(3rem,8vw,5rem);">
+        <p class="section-title__eyebrow">The Making Of</p>
+        <h2 class="section-title__main">Timeline</h2>
+        <div class="section-title__divider"></div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-event reveal">
+          <div class="event-left"><div class="event-year">2001</div></div>
+          <div class="event-dot">💡</div>
+          <div class="event-right"><div class="event-title">The Idea Sparks</div><p class="event-desc">DiMartino and Konietzko conceive the world of Avatar after watching a documentary about the South Pole.</p></div>
+        </div>
+        <div class="timeline-event reveal reveal-delay-1">
+          <div class="event-left"><div class="event-title">Book One: Water</div><p class="event-desc">The first season introduces Aang, the Avatar, and the quest to reach the North Pole.</p></div>
+          <div class="event-dot">🌊</div>
+          <div class="event-right"><div class="event-year">2005</div></div>
+        </div>
+        <div class="timeline-event reveal reveal-delay-2">
+          <div class="event-left"><div class="event-year">2006</div></div>
+          <div class="event-dot">🪨</div>
+          <div class="event-right"><div class="event-title">Book Two: Earth</div><p class="event-desc">The team crosses the Earth Kingdom. Toph joins. Ba Sing Se falls. One of TV's greatest seasons.</p></div>
+        </div>
+        <div class="timeline-event reveal reveal-delay-3">
+          <div class="event-left"><div class="event-title">Book Three: Fire</div><p class="event-desc">The world's fate hangs in the balance as the Day of Sozin's Comet approaches.</p></div>
+          <div class="event-dot">🔥</div>
+          <div class="event-right"><div class="event-year">2008</div></div>
+        </div>
+        <div class="timeline-event reveal reveal-delay-4">
+          <div class="event-left"><div class="event-year">2024</div></div>
+          <div class="event-dot">🌟</div>
+          <div class="event-right"><div class="event-title">Netflix Live-Action Series</div><p class="event-desc">A new era begins with Netflix's live-action adaptation, introducing Avatar to a new generation.</p></div>
+        </div>
+      </div>
+
+      <!-- ── Quote Wall ─────────────────────────────────────── -->
+      <div class="section-title reveal" style="margin-top:clamp(3rem,8vw,5rem);">
+        <p class="section-title__eyebrow">Wisdom of the Ages</p>
+        <h2 class="section-title__main">Legendary Quotes</h2>
+        <div class="section-title__divider"></div>
+      </div>
+      <div class="quote-wall">
+        <div class="quote-card reveal reveal-delay-1">
+          <p class="quote-card__text">It is important to draw wisdom from many different places. If we take it from only one place, it becomes rigid and stale.</p>
+          <div class="quote-card__author">☕ Uncle Iroh</div>
+        </div>
+        <div class="quote-card reveal reveal-delay-2">
+          <p class="quote-card__text">I am not the last Airbender. I'm the first of the new Air Nomads.</p>
+          <div class="quote-card__author">🌬️ Aang</div>
+        </div>
+        <div class="quote-card reveal reveal-delay-3">
+          <p class="quote-card__text">Protection and power are overrated. I think you are very wise to choose happiness and love.</p>
+          <div class="quote-card__author">☕ Uncle Iroh</div>
+        </div>
+        <div class="quote-card reveal reveal-delay-4">
+          <p class="quote-card__text">I can see clearly now. My father doesn't have a heart. He never did. You have a heart, and that's why you can do what he never could.</p>
+          <div class="quote-card__author">🔥 Zuko</div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+  <script src="nav.js"></script>
+  <script>
+    document.querySelectorAll('.reveal').forEach(el=>{
+      new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.08}).observe(el);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>History (Blog) | Avatar: The Animation Chronicles</title>
+  <meta name="description" content="The History blog — explore the lore, timelines, and deep chronicles of Avatar's world."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero {
+      min-height:50vh; display:flex; align-items:center; justify-content:center; text-align:center;
+      padding:3rem clamp(1rem,5vw,3rem);
+      background:radial-gradient(ellipse at 60% 40%, rgba(26,102,145,0.2) 0%, transparent 60%),
+                 radial-gradient(ellipse at 20% 70%, rgba(75,63,160,0.2) 0%, transparent 50%);
+      position:relative; overflow:hidden;
+    }
+    .page-hero__title {
+      font-family:var(--font-display); font-size:clamp(2rem,7vw,5rem); font-weight:900;
+      background:linear-gradient(135deg,var(--clr-gold),var(--clr-parchment),var(--clr-gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .page-hero__sub {
+      font-family:var(--font-heading); font-size:0.75rem; letter-spacing:0.3em;
+      text-transform:uppercase; color:var(--clr-gold); opacity:0.7; margin-bottom:0.8rem;
+    }
+
+    /* Blog layout */
+    .blog-section {
+      padding:clamp(4rem,10vw,7rem) clamp(1rem,5vw,4rem);
+      position:relative; z-index:2;
+    }
+    .blog-layout {
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:2.5rem;
+      align-items:start;
+    }
+    @media(max-width:900px){ .blog-layout { grid-template-columns:1fr; } }
+
+    /* Post list */
+    .blog-posts { display:flex; flex-direction:column; gap:1.5rem; }
+
+    .blog-post {
+      padding:2rem;
+      background:var(--clr-surface);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius-md);
+      backdrop-filter:blur(12px);
+      transition:transform 0.3s var(--ease-smooth), border-color 0.3s, box-shadow 0.3s;
+      position:relative; overflow:hidden;
+    }
+    .blog-post:hover {
+      transform:translateY(-4px);
+      border-color:rgba(212,175,55,0.3);
+      box-shadow:0 12px 40px rgba(0,0,0,0.35);
+    }
+    .blog-post::before {
+      content:''; position:absolute;
+      top:0; left:0; width:3px; height:100%;
+      background:var(--post-accent, var(--clr-gold));
+    }
+    .blog-post.air-post   { --post-accent: var(--clr-air); }
+    .blog-post.water-post { --post-accent: var(--clr-water-lt); }
+    .blog-post.earth-post { --post-accent: var(--clr-earth-lt); }
+    .blog-post.fire-post  { --post-accent: var(--clr-fire-lt); }
+
+    .blog-post__meta {
+      display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
+      margin-bottom:0.8rem;
+    }
+    .blog-post__tag {
+      padding:0.2rem 0.7rem;
+      border-radius:var(--radius-xl);
+      border:1px solid var(--post-accent, var(--clr-gold));
+      font-family:var(--font-heading);
+      font-size:0.6rem; letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--post-accent, var(--clr-gold));
+    }
+    .blog-post__date {
+      font-size:0.7rem; opacity:0.4;
+      font-family:var(--font-heading); letter-spacing:0.08em;
+    }
+    .blog-post__icon { font-size:1.4rem; }
+    .blog-post__title {
+      font-family:var(--font-display);
+      font-size:clamp(1.1rem,3vw,1.5rem);
+      color:var(--clr-parchment);
+      margin-bottom:0.7rem; line-height:1.2;
+    }
+    .blog-post__excerpt {
+      font-size:0.85rem; opacity:0.6; line-height:1.8;
+      margin-bottom:1.2rem;
+    }
+    .blog-post__footer {
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .blog-post__read {
+      font-family:var(--font-heading);
+      font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase;
+      color:var(--clr-gold);
+      border-bottom:1px solid transparent; transition:border-color 0.3s;
+      cursor:pointer;
+    }
+    .blog-post__read:hover { border-color:var(--clr-gold); }
+    .blog-post__read-time { font-size:0.7rem; opacity:0.35; }
+
+    /* Sidebar */
+    .blog-sidebar { display:flex; flex-direction:column; gap:1.5rem; }
+    .sidebar-widget {
+      padding:1.5rem;
+      background:var(--clr-surface);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius-md);
+    }
+    .sidebar-widget__title {
+      font-family:var(--font-heading);
+      font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--clr-gold); margin-bottom:1rem;
+    }
+    .sidebar-link-list { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
+    .sidebar-link-list a {
+      font-size:0.82rem; opacity:0.6; transition:opacity 0.2s, color 0.2s;
+      display:flex; align-items:center; gap:0.6rem;
+    }
+    .sidebar-link-list a:hover { opacity:1; color:var(--clr-gold); }
+    .sidebar-tag-cloud { display:flex; flex-wrap:wrap; gap:0.5rem; }
+    .s-tag {
+      padding:0.28rem 0.8rem;
+      border-radius:var(--radius-xl);
+      border:1px solid var(--clr-border);
+      font-family:var(--font-heading);
+      font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase;
+      opacity:0.6; cursor:pointer;
+      transition: all 0.25s;
+    }
+    .s-tag:hover { border-color:var(--clr-gold); color:var(--clr-gold); opacity:1; }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+  <div class="page-wrapper">
+
+    <section class="page-hero">
+      <div>
+        <p class="page-hero__sub">Lore, Timeline & Deep Dives</p>
+        <h1 class="page-hero__title">The History</h1>
+      </div>
+    </section>
+
+    <section class="blog-section">
+      <div class="section-title reveal">
+        <p class="section-title__eyebrow">The Chronicles</p>
+        <h2 class="section-title__main">Blog Posts</h2>
+        <div class="section-title__divider"></div>
+      </div>
+
+      <div class="blog-layout">
+        <!-- Posts -->
+        <div class="blog-posts">
+
+          <article class="blog-post air-post reveal">
+            <div class="blog-post__meta">
+              <span class="blog-post__icon">🌬️</span>
+              <span class="blog-post__tag">Air Nomads</span>
+              <span class="blog-post__date">Book One: Water</span>
+            </div>
+            <h2 class="blog-post__title">The Last Airbender: 100 Years in Ice</h2>
+            <p class="blog-post__excerpt">When Sokka and Katara discovered a boy encased in an iceberg near the South Pole, they could never have imagined that the child inside had been frozen for a century — or that he was the Avatar, the world's last hope against the Fire Nation's century-long war. This is the story of Aang's awakening and the burden he carried.</p>
+            <div class="blog-post__footer">
+              <span class="blog-post__read">Read More →</span>
+              <span class="blog-post__read-time">8 min read</span>
+            </div>
+          </article>
+
+          <article class="blog-post fire-post reveal reveal-delay-1">
+            <div class="blog-post__meta">
+              <span class="blog-post__icon">🔥</span>
+              <span class="blog-post__tag">Fire Nation</span>
+              <span class="blog-post__date">Book Two: Earth</span>
+            </div>
+            <h2 class="blog-post__title">Zuko's Redemption Arc: The Most Complex Journey</h2>
+            <p class="blog-post__excerpt">Prince Zuko stands as one of animation's greatest redemption stories. Scarred by his own father and driven by a desperate need to reclaim his honor, Zuko's slow, painful transformation from antagonist to hero is a masterclass in character writing. We trace every step of his arc across all three books.</p>
+            <div class="blog-post__footer">
+              <span class="blog-post__read">Read More →</span>
+              <span class="blog-post__read-time">12 min read</span>
+            </div>
+          </article>
+
+          <article class="blog-post earth-post reveal reveal-delay-2">
+            <div class="blog-post__meta">
+              <span class="blog-post__icon">🏯</span>
+              <span class="blog-post__tag">Earth Kingdom</span>
+              <span class="blog-post__date">Book Two: Earth</span>
+            </div>
+            <h2 class="blog-post__title">Ba Sing Se: The City of Walls and Secrets</h2>
+            <p class="blog-post__excerpt">Ba Sing Se is more than just the largest city in the world — it's a symbol of repression, denial, and the psychological cost of survival. The Dai Li, the Earth King's ignorance, and the lie "there is no war in Ba Sing Se" make the city one of ATLA's darkest and most fascinating settings.</p>
+            <div class="blog-post__footer">
+              <span class="blog-post__read">Read More →</span>
+              <span class="blog-post__read-time">10 min read</span>
+            </div>
+          </article>
+
+          <article class="blog-post water-post reveal reveal-delay-3">
+            <div class="blog-post__meta">
+              <span class="blog-post__icon">☕</span>
+              <span class="blog-post__tag">Wisdom</span>
+              <span class="blog-post__date">All Books</span>
+            </div>
+            <h2 class="blog-post__title">Iroh's Life Philosophy: Tea, Wisdom & Redemption</h2>
+            <p class="blog-post__excerpt">General Iroh — the Dragon of the West — is widely regarded as the soul of Avatar: The Last Airbender. His journey from a conquering general to a humble tea-maker and mentor is one of pure spiritual transformation. We collect his greatest quotes, moments of wisdom, and the lessons that still resonate decades later.</p>
+            <div class="blog-post__footer">
+              <span class="blog-post__read">Read More →</span>
+              <span class="blog-post__read-time">9 min read</span>
+            </div>
+          </article>
+
+          <article class="blog-post air-post reveal">
+            <div class="blog-post__meta">
+              <span class="blog-post__icon">✨</span>
+              <span class="blog-post__tag">Mythology</span>
+              <span class="blog-post__date">Book Three: Fire</span>
+            </div>
+            <h2 class="blog-post__title">The Avatar Cycle: Rebirth, Elements & Spiritual Balance</h2>
+            <p class="blog-post__excerpt">The Avatar is more than a single person — they are a cycle. Born and reborn across the nations in precise elemental order, each Avatar carries the memories and skills of every predecessor. We explore the metaphysics of the Avatar State, Raava, and what it truly means to be the bridge between worlds.</p>
+            <div class="blog-post__footer">
+              <span class="blog-post__read">Read More →</span>
+              <span class="blog-post__read-time">11 min read</span>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="blog-sidebar">
+          <div class="sidebar-widget reveal">
+            <div class="sidebar-widget__title">📖 Quick Navigation</div>
+            <ul class="sidebar-link-list">
+              <li><a href="index.html">🏠 Journey (Home)</a></li>
+              <li><a href="elements.html">🌍 Elements & Nations</a></li>
+              <li><a href="legends.html">⭐ Legends (Characters)</a></li>
+              <li><a href="gallery.html">🖼️ Archives (Gallery)</a></li>
+              <li><a href="creator.html">✍️ Creator's Corner</a></li>
+            </ul>
+          </div>
+          <div class="sidebar-widget reveal reveal-delay-1">
+            <div class="sidebar-widget__title">🏷️ Topics</div>
+            <div class="sidebar-tag-cloud">
+              <span class="s-tag">Air Nomads</span>
+              <span class="s-tag">Water Tribe</span>
+              <span class="s-tag">Earth Kingdom</span>
+              <span class="s-tag">Fire Nation</span>
+              <span class="s-tag">Avatar State</span>
+              <span class="s-tag">Spirits</span>
+              <span class="s-tag">Lore</span>
+              <span class="s-tag">Bending Arts</span>
+              <span class="s-tag">Philosophy</span>
+              <span class="s-tag">Timeline</span>
+              <span class="s-tag">Characters</span>
+              <span class="s-tag">Redemption</span>
+            </div>
+          </div>
+          <div class="sidebar-widget reveal reveal-delay-2">
+            <div class="sidebar-widget__title">📜 Top Posts</div>
+            <ul class="sidebar-link-list">
+              <li><a href="#">🌬️ Airbending Philosophy Explained</a></li>
+              <li><a href="#">🔥 Fire Nation's True History</a></li>
+              <li><a href="#">🪨 How Toph Changed Bending Forever</a></li>
+              <li><a href="#">🌊 Spirit Water & Bloodbending</a></li>
+              <li><a href="#">☕ The Best Iroh Quotes</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+  </div>
+  <script src="nav.js"></script>
+  <script>
+    document.querySelectorAll('.reveal').forEach(el=>{
+      new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.08}).observe(el);
+    });
+  </script>
+</body>
+</html>

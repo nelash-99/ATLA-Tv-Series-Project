@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Aang – Mastering the Elements</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050308;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function(){
+  const c=document.getElementById('c');
+  const ctx=c.getContext('2d');
+  let W,H;
+  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+  resize();
+  window.addEventListener('resize',resize);
+
+  // Phases: air, water, earth, fire, avatar
+  const phases=[
+    {name:'AIR',color:'#87CEEB',dark:'#1a3550',accent:'rgba(135,206,235,',label:'Air Nomad'},
+    {name:'WATER',color:'#5bc7f5',dark:'#0d2040',accent:'rgba(91,199,245,',label:'Waterbender'},
+    {name:'EARTH',color:'#7ec850',dark:'#0d2010',accent:'rgba(126,200,80,',label:'Earthbender'},
+    {name:'FIRE',color:'#f39c12',dark:'#2a0808',accent:'rgba(243,156,18,',label:'Firebender'},
+    {name:'AVATAR STATE',color:'#d4af37',dark:'#1a1030',accent:'rgba(212,175,55,',label:'The Avatar'},
+  ];
+  let phase=0,t=0,phaseT=0,particles=[],rings=[];
+  const PHASE_DUR=180; // frames per phase
+
+  // Particle pool
+  function spawnParticle(ph){
+    const col=phases[ph].accent;
+    const angle=Math.random()*Math.PI*2;
+    const speed=Math.random()*2+0.5;
+    const life=Math.random()*60+40;
+    let vx=Math.cos(angle)*speed,vy=Math.sin(angle)*speed;
+    if(ph===4){vx*=1.5;vy*=1.5;}
+    return{x:W/2+(Math.random()-0.5)*120,y:H/2+(Math.random()-0.5)*80,
+           vx,vy,r:Math.random()*3+1,life,maxLife:life,col};
+  }
+  function spawnRing(ph){
+    return{r:0,maxR:Math.max(W,H)*0.8,speed:4,alpha:0.6,col:phases[ph].color};
+  }
+
+  // Draw Aang silhouette (stylized)
+  function drawAang(ph,progress){
+    const cx=W/2, cy=H*0.52;
+    const glow=phases[ph].color;
+    // Aura glow behind
+    const auraR = 80+Math.sin(t*0.05)*10 + (ph===4?30:0);
+    const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,auraR*2);
+    grad.addColorStop(0,phases[ph].accent+'0.35)');
+    grad.addColorStop(0.5,phases[ph].accent+'0.12)');
+    grad.addColorStop(1,'transparent');
+    ctx.beginPath();
+    ctx.arc(cx,cy,auraR*2,0,Math.PI*2);
+    ctx.fillStyle=grad;
+    ctx.fill();
+
+    // Avatar state eye/arrow glow
+    if(ph===4){
+      ctx.save();
+      ctx.shadowColor='#d4af37';
+      ctx.shadowBlur=30;
+    }
+
+    // Body (standing meditation pose with arms out for bending)
+    const bob=Math.sin(t*0.04)*4;
+    const scale=0.9+Math.sin(t*0.03)*0.03;
+    ctx.save();
+    ctx.translate(cx,cy+bob);
+    ctx.scale(scale,scale);
+    ctx.fillStyle='#111';
+
+    // Legs
+    ctx.beginPath();
+    ctx.ellipse(0,55,10,28,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(0,55,22,8,Math.PI*0.1,0,Math.PI*2);
+    ctx.fill();
+
+    // Torso & robe
+    ctx.beginPath();
+    ctx.ellipse(0,10,22,38,0,0,Math.PI*2);
+    ctx.fill();
+
+    // Arms extended based on phase
+    const armAngle = ph===0 ? -Math.PI*0.3 : ph===2 ? -Math.PI*0.15 : -Math.PI*0.25;
+    const armWave = Math.sin(t*0.06)*0.15;
+    // Left arm
+    ctx.beginPath();
+    ctx.moveTo(-18,0);
+    ctx.quadraticCurveTo(-50+Math.cos(armWave+armAngle)*20,-30+Math.sin(armWave)*10,
+                         -65+Math.cos(armWave)*10,-15+Math.sin(armWave+armAngle)*20);
+    ctx.lineWidth=10;
+    ctx.strokeStyle='#111';
+    ctx.lineCap='round';
+    ctx.stroke();
+    // Right arm
+    ctx.beginPath();
+    ctx.moveTo(18,0);
+    ctx.quadraticCurveTo(50+Math.cos(-armWave+armAngle)*20,-30+Math.sin(-armWave)*10,
+                         65+Math.cos(-armWave)*10,-15+Math.sin(-armWave+armAngle)*20);
+    ctx.stroke();
+
+    // Head (bald)
+    ctx.fillStyle='#1a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(0,-38,20,22,0,0,Math.PI*2);
+    ctx.fill();
+    // Arrow on forehead (blue) pointing down
+    ctx.fillStyle=ph===4?'#fff':'#4af';
+    ctx.beginPath();
+    ctx.moveTo(0,-38);   // Bottom point (nose)
+    ctx.lineTo(-5,-46);  // Top left
+    ctx.lineTo(5,-46);   // Top right
+    ctx.closePath();
+    ctx.fill();
+    // Arrow tail (going up over the head)
+    ctx.fillStyle=ph===4?'#fff':'#4af';
+    ctx.fillRect(-2,-58,4,12);
+    // Eye glow in avatar state
+    if(ph===4){
+      ctx.fillStyle='#ffe';
+      ctx.beginPath();ctx.ellipse(-7,-38,4,3,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(7,-38,4,3,0,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+    if(ph===4) ctx.restore();
+
+    // Element effects at hands
+    drawElementEffect(ph,cx-65,cy-15+bob,cx+65,cy-15+bob,t);
+  }
+
+  function drawElementEffect(ph,lx,ly,rx,ry,tick){
+    const col=phases[ph].color;
+    const acc=phases[ph].accent;
+    if(ph===0){// Air — swirl rings
+      for(let i=0;i<3;i++){
+        const angle=tick*0.06+i*(Math.PI*2/3);
+        const sr=20+i*8;
+        ctx.beginPath();
+        ctx.arc(lx,ly,sr,angle,angle+Math.PI*1.4);
+        ctx.strokeStyle=acc+'0.7)';
+        ctx.lineWidth=2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(rx,ry,sr,-angle,-angle+Math.PI*1.4);
+        ctx.stroke();
+      }
+    } else if(ph===1){// Water — wave shape
+      ctx.save();
+      for(let side=0;side<2;side++){
+        const bx=side===0?lx:rx;
+        ctx.beginPath();
+        for(let a=0;a<Math.PI*2;a+=0.1){
+          const wx=bx+Math.cos(a)*25;
+          const wy=ly+Math.sin(a+(side===0?tick:-tick)*0.05)*18;
+          a===0?ctx.moveTo(wx,wy):ctx.lineTo(wx,wy);
+        }
+        ctx.closePath();
+        ctx.fillStyle=acc+'0.25)';
+        ctx.strokeStyle=acc+'0.8)';
+        ctx.lineWidth=2;
+        ctx.fill();ctx.stroke();
+      }
+      ctx.restore();
+    } else if(ph===2){// Earth — rock chunks
+      const numRocks=5;
+      for(let i=0;i<numRocks;i++){
+        const a=tick*0.04+i*(Math.PI*2/numRocks);
+        for(let side=0;side<2;side++){
+          const bx=side===0?lx:rx;
+          const rx2=bx+Math.cos(a)*(22+i*3);
+          const ry2=ly+Math.sin(a)*(14+i*2);
+          ctx.save();
+          ctx.translate(rx2,ry2);
+          ctx.rotate(a*0.5);
+          ctx.fillStyle=acc+'0.85)';
+          ctx.beginPath();
+          ctx.rect(-5,-4,10,8);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    } else if(ph===3){// Fire — flame tips
+      for(let side=0;side<2;side++){
+        const bx=side===0?lx:rx;
+        for(let fi=0;fi<6;fi++){
+          const fa=tick*0.08+fi*1.05+side;
+          const fr=18+Math.sin(tick*0.1+fi)*6;
+          const fx=bx+Math.cos(fa)*fr;
+          const fy=ly+Math.sin(fa)*fr*0.7;
+          const fGrad=ctx.createRadialGradient(fx,fy,0,fx,fy,10);
+          fGrad.addColorStop(0,'rgba(255,200,50,0.9)');
+          fGrad.addColorStop(0.5,acc+'0.5)');
+          fGrad.addColorStop(1,'transparent');
+          ctx.beginPath();
+          ctx.arc(fx,fy,10,0,Math.PI*2);
+          ctx.fillStyle=fGrad;
+          ctx.fill();
+        }
+      }
+    } else if(ph===4){// Avatar — all elements combined
+      const layers=[
+        {col:'rgba(135,206,235,',spd:0.03},
+        {col:'rgba(91,199,245,',spd:0.05},
+        {col:'rgba(126,200,80,',spd:0.04},
+        {col:'rgba(243,156,18,',spd:0.07},
+        {col:'rgba(212,175,55,',spd:0.09},
+      ];
+      layers.forEach((l,i)=>{
+        const a=tick*l.spd+i*(Math.PI*2/layers.length);
+        const orbitR=30+i*10;
+        for(let side=0;side<2;side++){
+          const bx=side===0?lx:rx;
+          const ox=bx+Math.cos(a+(side?Math.PI:0))*orbitR;
+          const oy=ly+Math.sin(a+(side?Math.PI:0))*orbitR*0.6;
+          const bGrad=ctx.createRadialGradient(ox,oy,0,ox,oy,12);
+          bGrad.addColorStop(0,l.col+'1)');
+          bGrad.addColorStop(1,l.col+'0)');
+          ctx.beginPath();
+          ctx.arc(ox,oy,12,0,Math.PI*2);
+          ctx.fillStyle=bGrad;
+          ctx.fill();
+        }
+      });
+    }
+  }
+
+  // HUD
+  function drawHUD(){
+    const ph=phases[Math.floor(phase)];
+    const nextPh=phases[(Math.floor(phase)+1)%phases.length];
+    // Progress bar at bottom
+    const barH=4, barY=H-barH*2;
+    ctx.fillStyle='rgba(255,255,255,0.08)';
+    ctx.fillRect(0,barY,W,barH);
+    const totalProgress=(phase*PHASE_DUR+phaseT)/(phases.length*PHASE_DUR);
+    ctx.fillStyle=ph.color;
+    ctx.fillRect(0,barY,W*totalProgress,barH);
+    // Phase dots
+    phases.forEach((_,i)=>{
+      const dx=W/2+(i-2)*32;
+      ctx.beginPath();
+      ctx.arc(dx,H-20,4,0,Math.PI*2);
+      ctx.fillStyle=i===Math.floor(phase)?phases[i].color:'rgba(255,255,255,0.2)';
+      ctx.fill();
+    });
+    // Element label
+    ctx.font='bold '+clamp(10,W*0.018,14)+'px "Cinzel",serif';
+    ctx.fillStyle=ph.color;
+    ctx.textAlign='center';
+    ctx.shadowColor=ph.color;
+    ctx.shadowBlur=12;
+    ctx.fillText(ph.label.toUpperCase(),W/2,H - 30);
+    ctx.shadowBlur=0;
+    // Phase name
+    ctx.font='bold '+clamp(18,W*0.05,36)+'px "Cinzel Decorative",serif';
+    ctx.fillStyle=ph.color;
+    ctx.shadowColor=ph.color;
+    ctx.shadowBlur=20;
+    ctx.fillText(ph.name,W/2,H*0.15);
+    ctx.shadowBlur=0;
+  }
+
+  function clamp(min,val,max){return Math.max(min,Math.min(max,val));}
+
+  let lastSpawn=0;
+  function frame(){
+    requestAnimationFrame(frame);
+    t++;
+    phaseT++;
+    if(phaseT>=PHASE_DUR){phaseT=0;phase=(phase+1)%phases.length;rings.push(spawnRing(phase));}
+    const phI=Math.floor(phase);
+    // Spawn particles
+    if(t-lastSpawn>2){
+      particles.push(spawnParticle(phI));
+      if(phI===4){particles.push(spawnParticle(phI));particles.push(spawnParticle(phI));}
+      lastSpawn=t;
+    }
+    if(particles.length>200)particles.splice(0,particles.length-200);
+
+    // BG
+    const ph=phases[phI];
+    const bgGrad=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H));
+    bgGrad.addColorStop(0,ph.dark);
+    bgGrad.addColorStop(1,'#050308');
+    ctx.fillStyle=bgGrad;
+    ctx.fillRect(0,0,W,H);
+
+    // Rings
+    rings=rings.filter(r=>{
+      r.r+=r.speed;
+      r.alpha*=0.97;
+      if(r.alpha<0.005)return false;
+      ctx.beginPath();
+      ctx.arc(W/2,H/2,r.r,0,Math.PI*2);
+      ctx.strokeStyle=r.col;
+      ctx.globalAlpha=r.alpha;
+      ctx.lineWidth=2;
+      ctx.stroke();
+      ctx.globalAlpha=1;
+      return true;
+    });
+
+    // Grid background lines
+    ctx.strokeStyle=phases[phI].accent+'0.04)';
+    ctx.lineWidth=1;
+    const grid=60;
+    for(let x=0;x<W;x+=grid){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=grid){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+    // Particles
+    particles=particles.filter(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy-=0.02; p.life--;
+      if(p.life<=0)return false;
+      const alpha=p.life/p.maxLife;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.col+alpha+')';
+      ctx.fill();
+      return true;
+    });
+
+    // Aang
+    drawAang(phI,phaseT/PHASE_DUR);
+
+    // HUD
+    drawHUD();
+  }
+  frame();
+})();
+</script>
+</body>
+</html>

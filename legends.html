@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Legends (Characters) | Avatar: The Animation Chronicles</title>
+  <meta name="description" content="Meet the legendary characters of Avatar: The Last Airbender — Aang, Katara, Zuko, Toph, Iroh, Azula, and Sokka."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero {
+      min-height: 50vh;
+      display:flex; align-items:center; justify-content:center; text-align:center;
+      padding: 3rem clamp(1rem,5vw,3rem);
+      position:relative; overflow:hidden;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(75,63,160,0.3) 0%, transparent 70%);
+    }
+    .page-hero__title {
+      font-family:var(--font-display);
+      font-size:clamp(2rem,7vw,5rem); font-weight:900;
+      background:linear-gradient(135deg,var(--clr-gold),var(--clr-parchment),var(--clr-gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .page-hero__sub {
+      font-family:var(--font-heading);
+      font-size:0.75rem; letter-spacing:0.3em; text-transform:uppercase;
+      color:var(--clr-gold); opacity:0.7; margin-bottom:0.8rem;
+    }
+
+    /* Legends grid */
+    .legends-section {
+      padding: clamp(4rem,10vw,7rem) clamp(1rem,5vw,4rem);
+      position:relative; z-index:2;
+    }
+    .legends-full-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    @media(max-width:600px){ .legends-full-grid { grid-template-columns: 1fr; } }
+
+    .legend-card {
+      border-radius: var(--radius-md);
+      overflow:hidden;
+      background:var(--clr-surface);
+      border:1px solid var(--clr-border);
+      backdrop-filter:blur(12px);
+      transition: transform 0.4s var(--ease-bounce), box-shadow 0.4s, border-color 0.3s;
+      cursor:pointer;
+      position:relative;
+    }
+    .legend-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .legend-card:hover .legend-card__img-wrap img { transform: scale(1.08); }
+
+    .legend-card__nation-bar {
+      height:3px; width:100%;
+      background: var(--bar-color, var(--clr-gold));
+    }
+    .legend-card__img-wrap {
+      height: 300px; overflow:hidden;
+      position:relative;
+      background: radial-gradient(ellipse at top, var(--nation-bg-col, rgba(75,63,160,0.2)), rgba(10,8,18,0.9));
+    }
+    .legend-card__img-wrap img {
+      width:100%; height:100%;
+      object-fit:cover; object-position:top;
+      transition:transform 0.5s var(--ease-smooth);
+    }
+    .legend-card__img-wrap .no-img {
+      width:100%; height:100%;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      font-size:5rem; background:inherit;
+    }
+
+    .legend-card__body { padding:1.5rem; }
+    .legend-card__element {
+      font-size:1.3rem; margin-bottom:0.5rem;
+    }
+    .legend-card__name {
+      font-family:var(--font-display);
+      font-size:1.4rem; font-weight:700;
+      color:var(--clr-parchment);
+      margin-bottom:0.2rem;
+    }
+    .legend-card__title {
+      font-family:var(--font-heading);
+      font-size:0.65rem; letter-spacing:0.18em;
+      text-transform:uppercase;
+      color: var(--title-color, var(--clr-gold));
+      opacity:0.8; margin-bottom:0.9rem;
+    }
+    .legend-card__desc {
+      font-size:0.82rem; opacity:0.6; line-height:1.75;
+      margin-bottom:1.2rem;
+    }
+    .legend-card__stats {
+      display:flex; gap:1rem; flex-wrap:wrap;
+    }
+    .legend-stat {
+      flex:1; min-width:90px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius-sm);
+      padding:0.6rem 0.8rem;
+    }
+    .legend-stat__label {
+      font-family:var(--font-heading);
+      font-size:0.58rem; letter-spacing:0.15em;
+      text-transform:uppercase; opacity:0.45; margin-bottom:0.2rem;
+    }
+    .legend-stat__val {
+      font-family:var(--font-heading);
+      font-size:0.78rem; font-weight:600;
+      color: var(--title-color, var(--clr-gold));
+    }
+
+    /* Nation color vars per card */
+    .lc-air   { --bar-color:var(--clr-air);      --title-color:var(--clr-air);      --nation-bg-col:rgba(135,206,235,0.15); }
+    .lc-air:hover   { border-color:rgba(135,206,235,0.4); }
+    .lc-water { --bar-color:var(--clr-water-lt);  --title-color:var(--clr-water-lt); --nation-bg-col:rgba(26,102,145,0.2); }
+    .lc-water:hover { border-color:rgba(91,199,245,0.4); }
+    .lc-earth { --bar-color:var(--clr-earth-lt);  --title-color:var(--clr-earth-lt); --nation-bg-col:rgba(58,107,53,0.2); }
+    .lc-earth:hover { border-color:rgba(126,200,80,0.4); }
+    .lc-fire  { --bar-color:var(--clr-fire-lt);   --title-color:var(--clr-fire-lt);  --nation-bg-col:rgba(192,57,43,0.2); }
+    .lc-fire:hover  { border-color:rgba(243,156,18,0.4); }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+  <div class="page-wrapper">
+
+    <section class="page-hero">
+      <div>
+        <p class="page-hero__sub">Meet the Warriors, Benders & Legends</p>
+        <h1 class="page-hero__title">The Legends</h1>
+      </div>
+    </section>
+
+    <section class="legends-section">
+      <div class="section-title reveal">
+        <p class="section-title__eyebrow">The Chosen Few</p>
+        <h2 class="section-title__main">Characters</h2>
+        <div class="section-title__divider"></div>
+      </div>
+
+      <div class="legends-full-grid">
+
+        <!-- AANG -->
+        <div class="legend-card lc-air reveal reveal-delay-1" id="aang">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="aang.png" alt="Aang"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">🌬️</div>
+            <div class="legend-card__name">Aang</div>
+            <div class="legend-card__title">The Avatar · Last Airbender</div>
+            <p class="legend-card__desc">A young Air Nomad monk discovered frozen in ice for 100 years, Aang is the Avatar — the bridge between the human and spirit worlds, and the only one who can master all four elements.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat">
+                <div class="legend-stat__label">Nation</div>
+                <div class="legend-stat__val">Air Nomads</div>
+              </div>
+              <div class="legend-stat">
+                <div class="legend-stat__label">Element</div>
+                <div class="legend-stat__val">Air (All)</div>
+              </div>
+              <div class="legend-stat">
+                <div class="legend-stat__label">Role</div>
+                <div class="legend-stat__val">The Avatar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KATARA -->
+        <div class="legend-card lc-water reveal reveal-delay-2" id="katara">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="katara.png" alt="Katara"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">🌊</div>
+            <div class="legend-card__name">Katara</div>
+            <div class="legend-card__title">Master Waterbender · Healer</div>
+            <p class="legend-card__desc">Driven by hope and fierce compassion, Katara grew from a self-taught bender into one of the greatest waterbending masters of her generation — healer, warrior, and Aang's greatest ally.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Water Tribe</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">Water</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Healer & Warrior</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZUKO -->
+        <div class="legend-card lc-fire reveal reveal-delay-3" id="zuko">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="zuko.png" alt="Zuko"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">🔥</div>
+            <div class="legend-card__name">Zuko</div>
+            <div class="legend-card__title">Fire Nation Prince · Redeemed Hero</div>
+            <p class="legend-card__desc">Exiled by his own father and scarred by dishonor, Prince Zuko walked the painful road of redemption — ultimately choosing honor over power to become Aang's greatest fire teacher.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Fire Nation</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">Fire</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Prince & Ally</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOPH -->
+        <div class="legend-card lc-earth reveal reveal-delay-4" id="toph">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="toph.png" alt="Toph"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">🪨</div>
+            <div class="legend-card__name">Toph Beifong</div>
+            <div class="legend-card__title">Inventor of Metalbending · Blind Earthbender</div>
+            <p class="legend-card__desc">Born blind into nobility, Toph secretly trained with Badgermoles and became the world's greatest earthbender — inventing metalbending and seeing the world through the earth beneath her feet.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Earth Kingdom</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">Earth / Metal</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Greatest Bender</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IROH -->
+        <div class="legend-card lc-fire reveal reveal-delay-1" id="iroh">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="iroh.png" alt="Iroh"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">☕</div>
+            <div class="legend-card__name">Iroh</div>
+            <div class="legend-card__title">Dragon of the West · Wise Mentor</div>
+            <p class="legend-card__desc">Once the fearsome Dragon of the West, General Iroh found wisdom through loss and tea. A true firebending master who learned directly from dragons, his gentle guidance shaped a generation.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Fire Nation</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">Fire (True)</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Mentor & Sage</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AZULA -->
+        <div class="legend-card lc-fire reveal reveal-delay-2" id="azula">
+          <div class="legend-card__nation-bar" style="background:linear-gradient(90deg,var(--clr-fire-lt),#4af)"></div>
+          <div class="legend-card__img-wrap">
+            <img src="azula.png" alt="Azula"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">⚡</div>
+            <div class="legend-card__name">Azula</div>
+            <div class="legend-card__title">Fire Nation Princess · Prodigy</div>
+            <p class="legend-card__desc">A terrifying prodigy who mastered lightning and blue fire before her teens, Azula is cold, calculating, and nearly perfect — a perfect monster of the Fire Nation's imperial ambition.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Fire Nation</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">Blue Fire / ⚡</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Antagonist</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOKKA -->
+        <div class="legend-card lc-water reveal reveal-delay-3" id="sokka">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="sokka.jpg" alt="Sokka"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">🌊</div>
+            <div class="legend-card__name">Sokka</div>
+            <div class="legend-card__title">Water Tribe Warrior · Strategist</div>
+            <p class="legend-card__desc">Katara's older brother and the group's strategist and comedian, Sokka is non-bending but makes up for it with sharp intellect, boomerang mastery, and an unmatched heart of courage.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Water Tribe</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">None (Warrior)</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Warrior & Wit</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUKI -->
+        <div class="legend-card lc-earth reveal reveal-delay-4" id="suki">
+          <div class="legend-card__nation-bar"></div>
+          <div class="legend-card__img-wrap">
+            <img src="Suki.png" alt="Suki"/>
+          </div>
+          <div class="legend-card__body">
+            <div class="legend-card__element">🪨</div>
+            <div class="legend-card__name">Suki</div>
+            <div class="legend-card__title">Kyoshi Warrior Leader</div>
+            <p class="legend-card__desc">The fierce and dedicated leader of the Kyoshi Warriors, Suki fights with unmatched agility and traditional war fans, inspiring her island and the Earth Kingdom alike.</p>
+            <div class="legend-card__stats">
+              <div class="legend-stat"><div class="legend-stat__label">Nation</div><div class="legend-stat__val">Earth Kingdom</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Element</div><div class="legend-stat__val">None (Warrior)</div></div>
+              <div class="legend-stat"><div class="legend-stat__label">Role</div><div class="legend-stat__val">Warrior Leader</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+  <script src="nav.js"></script>
+  <script>
+    document.querySelectorAll('.reveal').forEach(el=>{
+      new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:0.08}).observe(el);
+    });
+  </script>
+</body>
+</html>
